@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>答案排序</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ question }}</h1>
+    <form action="/" method="POST">
+        <ul id="sortable">
+            {% for answer in answers %}
+            <li class="ui-state-default">
+                <input type="hidden" name="answer" value="{{ answer }}">
+                {{ answer }}
+            </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <input type="submit" value="提交答案顺序">
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function() {
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+    </script>
+</body>
+</html>

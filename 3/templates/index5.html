@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>答案列表</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        #sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 250px;
+        }
+        #sortable li {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            color: #333;
+            margin: 5px;
+            padding: 10px;
+            cursor: grab;
+        }
+        .group {
+            background-color: #f2f2f2;
+        }
+        #submitBtn {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(function() {
+            var groupCounter = 1;
+
+            $("#sortable").sortable({
+                connectWith: ".group",
+                placeholder: "ui-state-highlight",
+                group: {
+                    name: "answers",
+                    pull: true
+                },
+                start: function(event, ui) {
+                    var currentGroup = $(ui.item).attr('data-group');
+                    if (!currentGroup) {
+                        $(ui.item).attr('data-group', groupCounter++);
+                        $(ui.item).addClass('group');
+                    }
+                }
+            });
+
+            $("#sortable").disableSelection();
+
+            $("#submitBtn").click(function() {
+                var sortedAnswers = [];
+                $("#sortable li").each(function() {
+                    sortedAnswers.push($(this).text());
+                });
+                alert("排序后的值：" + sortedAnswers.join(", "));
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>答案列表</h1>
+    <ul id="sortable">
+        <li>答案1</li>
+        <li>答案2</li>
+        <li>答案3</li>
+        <li>答案4</li>
+        <li>答案5</li>
+        <li>答案6</li>
+        <li>答案7</li>
+        <li>答案8</li>
+        <li>答案9</li>
+        <li>答案10</li>
+    </ul>
+    <button id="submitBtn">提交</button>
+</body>
+</html>
