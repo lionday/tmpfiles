@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>问题排序</title>
+    <style>
+        /* 样式用于答案拖动排序 */
+        .draggable {
+            cursor: move;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <script>
+        // 在文档加载完成后执行以下JavaScript代码
+        $(document).ready(function () {
+            // 使答案可拖动排序
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+        });
+
+        // 提交表单时将排序后的值替换为对应的键
+        function submitForm() {
+            var sortedAnswers = [];
+            $("#sortable li").each(function () {
+                var value = $(this).find("span").text();
+                sortedAnswers.push(value);
+            });
+
+            var originalAnswers = JSON.parse('{{ answers | tojson }}');
+            var sortedKeys = [];
+            for (var i = 0; i < sortedAnswers.length; i++) {
+                var value = sortedAnswers[i];
+                var key = Object.keys(originalAnswers).find(function (k) {
+                    return originalAnswers[k] === value;
+                });
+                sortedKeys.push(key);
+            }
+
+            $('input[name="answer[]"]').each(function (index) {
+                $(this).val(sortedKeys[index]);
+            });
+
+            // 提交表单
+            $('form').submit();
+        }
+    </script>
+</head>
+<body>
+    <h1>{{ question }}</h1>
+    <form method="POST" onsubmit="submitForm(); return false;">
+        <ul id="sortable">
+            {% for key, value in answers.items() %}
+            <li class="draggable">
+                <input type="hidden" name="answer[]" value="{{ key }}">
+                <span>{{ value }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">提交</button>
+    </form>
+</body>
+</html>

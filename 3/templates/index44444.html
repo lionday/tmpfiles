@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>问题排序</title>
+    <style>
+        /* 样式用于答案拖动排序 */
+        .draggable {
+            cursor: move;
+            padding: 10px;
+            margin-bottom: 5px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 新的按钮样式 */
+        .yellow-btn {
+            background-color: yellow;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+    <script>
+        // 在文档加载完成后执行以下JavaScript代码
+        $(document).ready(function () {
+            // 使答案可拖动排序
+            $("#sortable").sortable();
+            $("#sortable").disableSelection();
+
+            // 切换按钮值的函数
+            function toggleButton(button) {
+                if (button.value === "0") {
+                    button.value = "和上面差不多";
+                    button.innerHTML = "和上面差不多";
+                    $(button).addClass('yellow-btn'); // 添加新的类
+                } else {
+                    button.value = "0";
+                    button.innerHTML = "0";
+                    $(button).removeClass('yellow-btn'); // 移除新的类
+                }
+
+                // 更新隐藏的表单字段
+                var answerInput = $(button).closest('.draggable').find('.answer-input');
+                answerInput.val(button.value);
+            }
+
+            // 监听按钮点击事件
+            $(".toggle-btn").click(function () {
+                toggleButton(this);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>{{ question }}</h1>
+    <form method="POST">
+        <ul id="sortable">
+            {% for key, value in answers.items() %}
+            <li class="draggable">
+                <input type="hidden" name="answer[]" value="{{ key }}">
+                <span>{{ value }}</span>
+                <input class="answer-input" type="hidden" name="button[]" value="0">
+                <button class="toggle-btn" type="button" value="0">0</button>
+            </li>
+            {% endfor %}
+        </ul>
+        <button type="submit">提交</button>
+    </form>
+</body>
+</html>
